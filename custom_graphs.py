@@ -73,13 +73,23 @@ class SmoothGraphFromSetPoints(VMobject):
 #  / __|/ __/ _ \ '_ \ / _ \/ __|
 #  \__ \ (_|  __/ | | |  __/\__ \
 #  |___/\___\___|_| |_|\___||___/
-# Graph with set of points
-class CustomGraph1(GraphFromData):
+
+
+class Intro(Scene):
     def construct(self):
-        self.setup_axes()
-        coords = get_coords_from_csv("custom_graphs/epikurve")
-        dots = self.get_dots_from_coords(coords)
-        self.add(dots)
+        line1 = TextMobject("Correlation between the number of")
+        line2 = TextMobject("positive COVID-19 tests per day")
+        line3 = TextMobject("and the introduction of preventive measures")
+        line1.move_to(UP)
+        line2.move_to(line1.get_center() + .5 * DOWN)
+        line3.move_to(line2.get_center() + .5 * DOWN)
+        vgroup = VGroup(line1, line2, line3)
+
+        self.wait(1.5)
+        self.play(
+            Write(vgroup)
+        )
+        self.wait(3)
 
 # Discrete Graph
 class CustomGraph2(GraphFromData):
@@ -115,7 +125,7 @@ class CustomGraph2(GraphFromData):
         brace_text = braces.get_text("14 days")
 
         # MNS-Pflicht
-        legend3 = TextMobject("Madatory masks", color=BLUE)
+        legend3 = TextMobject("Mandatory masks", color=BLUE)
         legend3.move_to(legend2.get_center() + .5 * DOWN)
         line5 = Line(self.coords_to_point(37, -50), self.coords_to_point(37, 250), color=BLUE)
         line6 = Line(self.coords_to_point(51, -50), self.coords_to_point(51, 250), color=BLUE)
@@ -149,7 +159,7 @@ class CustomGraph2(GraphFromData):
             GrowFromCenter(braces),
             Write(brace_text)
         )
-        self.wait(3)
+        self.wait(10)
         self.play(
             Uncreate(line1),
             Uncreate(line2),
@@ -167,63 +177,3 @@ class CustomGraph2(GraphFromData):
             Uncreate(self.y_axis)
         )
         self.wait(3)
-
-# Smooth graph
-class CustomGraph3(GraphFromData):
-    CONFIG = {
-        "y_max": 25,
-    }
-    def construct(self):
-        self.setup_axes()
-        x = [0 , 1, 2, 3,  4,  5,  6,  7]
-        y = [0 , 1, 4, 9, 16, 25, 20, 10]
-
-        coords = [[px,py] for px,py in zip(x,y)]
-        # |
-        # V
-        points = self.get_points_from_coords(coords)
-        
-        graph = SmoothGraphFromSetPoints(points,color=GREEN)
-        dots = self.get_dots_from_coords(coords)
-
-        self.add(graph,dots)
-
-# But, we can do the same thing with a simple SCENE
-class CustomGraph4(Scene):
-    def construct(self):
-        axes = Axes()
-        x = [0 , 1, 2, 3,  4, 5,  6]
-        y = [0 , 1, 0, -1, 0,  1, 0]
-
-        coords = [[px,py] for px,py in zip(x,y)]
-        # |
-        # V
-        points = self.get_points_from_coords(axes,coords)
-
-        dots = self.get_dots_from_coords(axes,coords)
-        graph = SmoothGraphFromSetPoints(points,color=GREEN)
-
-        self.add(axes,graph,dots)
-
-    def get_points_from_coords(self,axes,coords):
-        return [axes.coords_to_point(px,py)
-            for px,py in coords
-            ]
-
-    # Return the dots of a set of points
-    def get_dots_from_coords(self,axes,coords,radius=0.1):
-        points = self.get_points_from_coords(axes,coords)
-        dots = VGroup(*[
-            Dot(radius=radius).move_to([px,py,pz])
-            for px,py,pz in points
-            ]
-        )
-        return dots
-
-        
-#               ____          _____ ____  
-#              | __ ) _   _  |_   _| __ ) 
-#              |  _ \| | | |   | | |  _ \ 
-#              | |_) | |_| |   | | | |_) |
-#              |____/ \__, |   |_| |____/ 
-#                     |___/   
