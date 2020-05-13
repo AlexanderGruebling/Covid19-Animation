@@ -89,6 +89,10 @@ class Intro(Scene):
         self.play(
             Write(vgroup)
         )
+        self.wait(2)
+        self.play(
+            Uncreate(vgroup)
+        )
         self.wait(3)
 
 # Discrete Graph
@@ -175,5 +179,26 @@ class CustomGraph2(GraphFromData):
             Uncreate(graph),
             Uncreate(self.x_axis),
             Uncreate(self.y_axis)
+        )
+        self.wait(3)
+
+
+class Outro(Scene):
+    def construct(self):
+        line1 = TextMobject("Created by")
+        line2 = TextMobject("Alexander Grübling and")
+        line3 = TextMobject("Vjeko Mistrafovic")
+        line1.move_to(UP)
+        line2.move_to(line1.get_center() + .5 * DOWN)
+        line3.move_to(line2.get_center() + .5 * DOWN)
+        vgroup = VGroup(line1, line2, line3)
+
+        self.wait(1.5)
+        self.play(
+            Write(vgroup)
+        )
+        self.wait(2)
+        self.play(
+            Uncreate(vgroup)
         )
         self.wait(3)
