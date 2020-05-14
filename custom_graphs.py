@@ -182,6 +182,92 @@ class CustomGraph2(GraphFromData):
         )
         self.wait(3)
 
+class CustomGraph3(GraphFromData):
+    CONFIG = {
+        "y_max": 14304,
+        "y_tick_frequency": 1200,
+        "y_axis_label": "Number of recovered people",
+        "x_max": 78,
+        "x_tick_frequency": 5,
+        "x_axis_label": "Days"
+    }
+    def construct(self):
+        self.setup_axes()
+        # Get coords
+        coords = get_coords_from_csv("genesene_")
+        points = self.get_points_from_coords(coords)
+        # Set graph
+        graph = DiscreteGraphFromSetPoints(points,color=ORANGE)
+
+        # Schulschließungen
+        legend1 = TextMobject("School closings", color=GREEN)
+        legend1.to_corner(UR+DOWN)
+        line1 = Line(self.coords_to_point(16, -50), self.coords_to_point(16, 2500), color=GREEN)
+        line2 = Line(self.coords_to_point(30, -50), self.coords_to_point(30, 2500), color=GREEN)
+
+        # Ausgangsbeschränkungen
+        legend2 = TextMobject("Lockdown", color = RED)
+        legend2.move_to(legend1.get_center() + .5 * DOWN)
+        line3 = Line(self.coords_to_point(20, -50), self.coords_to_point(20, 2500), color=RED)
+        line4 = Line(self.coords_to_point(34, -50), self.coords_to_point(34, 2500), color=RED)
+        vgroup = VGroup(line3, line4)
+        braces = Brace(vgroup, DOWN, color=RED)
+        brace_text = braces.get_text("14 days")
+
+        # MNS-Pflicht
+        legend3 = TextMobject("Mandatory masks", color=BLUE)
+        legend3.move_to(legend2.get_center() + .5 * DOWN)
+        line5 = Line(self.coords_to_point(37, -50), self.coords_to_point(37, 2500), color=BLUE)
+        line6 = Line(self.coords_to_point(51, -50), self.coords_to_point(51, 2500), color=BLUE)
+
+        #self.y_axis.add_numbers(*range(0, 1260, 200))
+
+        # Set dots
+        #dots = self.get_dots_from_coords(coords)
+        self.play(
+            Write(self.x_axis),
+            Write(self.y_axis),
+            #ShowCreation(dots),
+            ShowCreation(graph, run_time=5)
+        )
+        self.play(
+            ShowCreation(line1),
+            ShowCreation(line2),
+            Write(legend1)
+        )
+        self.play(
+            ShowCreation(vgroup),
+            Write(legend2)
+        )
+        self.play(
+            ShowCreation(line5),
+            ShowCreation(line6),
+            Write(legend3)
+        )
+        self.wait(3)
+        self.play(
+            GrowFromCenter(braces),
+            Write(brace_text)
+        )
+        self.wait(10)
+        self.play(
+            Uncreate(line1),
+            Uncreate(line2),
+            Uncreate(vgroup),
+            Uncreate(line5),
+            Uncreate(line6),
+            Uncreate(braces),
+            Uncreate(brace_text),
+            Uncreate(legend1),
+            Uncreate(legend2),
+            Uncreate(legend3),
+            #Uncreate(dots),
+            Uncreate(graph),
+            Uncreate(self.x_axis),
+            Uncreate(self.y_axis)
+        )
+        self.wait(3)
+
 
 class Outro(Scene):
     def construct(self):
